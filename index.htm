@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>恋みくじ神社</title>
+
+<style>
+body{
+    font-family:sans-serif;
+    text-align:center;
+    background:#f8efe5;
+}
+
+h1{
+    color:#b22222;
+}
+
+button{
+    padding:10px 20px;
+    margin:10px;
+    font-size:16px;
+    border:none;
+    border-radius:5px;
+    background:#d9534f;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#c9302c;
+}
+
+#omikujiArea{
+    display:none;
+    margin-top:40px;
+}
+
+.box{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+}
+
+.omikuji{
+    width:100px;
+    height:140px;
+    background:white;
+    border:2px solid #b22222;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+#result{
+    margin-top:30px;
+    font-size:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⛩ 恋みくじ神社 ⛩</h1>
+<p>あなたの恋の状況を選んでください</p>
+
+<div id="selectArea">
+
+<button onclick="start('kata')">💘片思い</button>
+<button onclick="start('ryo')">💞両思い</button>
+<button onclick="start('fuku')">💔復縁</button>
+
+</div>
+
+<div id="omikujiArea">
+
+<p>おみくじをひとつ選んでください</p>
+
+<div class="box">
+<div class="omikuji" onclick="draw()">おみくじ</div>
+<div class="omikuji" onclick="draw()">おみくじ</div>
+<div class="omikuji" onclick="draw()">おみくじ</div>
+</div>
+
+</div>
+
+<div id="result"></div>
+
+<script>
+
+let type="";
+
+function start(t){
+
+let today = new Date().toLocaleDateString()
+
+if(localStorage.getItem("omikujiDate")==today){
+document.getElementById("result").innerHTML="今日はもうおみくじを引きました。また明日来てください⛩"
+return
+}
+
+type=t
+
+document.getElementById("selectArea").style.display="none"
+document.getElementById("omikujiArea").style.display="block"
+}
+
+let fortunes={
+
+kata:[
+"💖大吉：勇気を出して話しかけて。",
+"🌸中吉：共通の話題を見つけると良い。",
+"😊小吉：笑顔と挨拶が恋を進める。",
+"🍀末吉：焦らず距離を縮めて。"
+],
+
+ryo:[
+"💞大吉：感謝を伝えるとさらに仲良く。",
+"🌸中吉：一緒に新しいことをすると良い。",
+"😊小吉：相手を褒めると◎",
+"🍀末吉：相手を思いやる気持ちを。"
+],
+
+fuku:[
+"💖大吉：復縁のチャンスあり。",
+"🌸中吉：まずは友達から。",
+"😊小吉：過去を責めないこと。",
+"🍀末吉：自分磨きをしよう。"
+]
+
+}
+
+function draw(){
+
+let list=fortunes[type]
+let random=Math.floor(Math.random()*list.length)
+
+document.getElementById("result").innerHTML=list[random]
+
+let today = new Date().toLocaleDateString()
+localStorage.setItem("omikujiDate",today)
+
+}
+
+</script>
+
+</body>
+</html>
