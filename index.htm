@@ -5,127 +5,173 @@
 <title>恋みくじ神社</title>
 
 <style>
+
 body{
-    font-family:sans-serif;
-    text-align:center;
-    background:#f8efe5;
+font-family:"Hiragino Mincho ProN",serif;
+background:#fff7f5;
+text-align:center;
+margin:0;
 }
 
-h1{
-    color:#b22222;
+header{
+background:#c62828;
+color:white;
+padding:20px;
+font-size:32px;
 }
 
 button{
-    padding:10px 20px;
-    margin:10px;
-    font-size:16px;
-    border:none;
-    border-radius:5px;
-    background:#d9534f;
-    color:white;
-    cursor:pointer;
+padding:12px 25px;
+margin:10px;
+border:none;
+border-radius:30px;
+background:#d84343;
+color:white;
+font-size:16px;
+cursor:pointer;
 }
 
 button:hover{
-    background:#c9302c;
-}
-
-#omikujiArea{
-    display:none;
-    margin-top:40px;
+background:#b71c1c;
 }
 
 .box{
-    display:flex;
-    justify-content:center;
-    gap:20px;
+display:flex;
+justify-content:center;
+gap:25px;
+margin-top:30px;
 }
 
 .omikuji{
-    width:100px;
-    height:140px;
-    background:white;
-    border:2px solid #b22222;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
+width:110px;
+height:150px;
+background:#fffdf5;
+border:2px solid #c62828;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+box-shadow:0 6px 10px rgba(0,0,0,0.2);
+transition:0.3s;
+}
+
+.omikuji:hover{
+transform:translateY(-8px);
 }
 
 #result{
-    margin-top:30px;
-    font-size:20px;
+margin-top:30px;
+font-size:20px;
+background:white;
+width:60%;
+margin-left:auto;
+margin-right:auto;
+padding:20px;
+border-radius:10px;
+box-shadow:0 5px 10px rgba(0,0,0,0.2);
 }
+
+.ema-board{
+margin-top:50px;
+padding:30px;
+background:#f5e3c3;
+}
+
+.ema-title{
+font-size:24px;
+margin-bottom:20px;
+}
+
+.ema-container{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:15px;
+}
+
+.ema{
+width:140px;
+height:90px;
+background:#d8a45c;
+border-radius:10px;
+padding:10px;
+font-size:12px;
+box-shadow:0 4px 6px rgba(0,0,0,0.2);
+}
+
 </style>
 </head>
 
 <body>
 
-<h1>⛩ 恋みくじ神社 ⛩</h1>
-<p>あなたの恋の状況を選んでください</p>
+<header>⛩ 恋みくじ神社 ⛩</header>
 
-<div id="selectArea">
+<p>恋の状況を選んでください</p>
 
-<button onclick="start('kata')">💘片思い</button>
-<button onclick="start('ryo')">💞両思い</button>
-<button onclick="start('fuku')">💔復縁</button>
+<div id="select">
+
+<button onclick="start('kata')">片思い</button>
+<button onclick="start('ryo')">両思い</button>
+<button onclick="start('fuku')">復縁</button>
 
 </div>
 
-<div id="omikujiArea">
+<div id="omikujiArea" style="display:none">
 
-<p>おみくじをひとつ選んでください</p>
+<p>おみくじを選んでください</p>
 
 <div class="box">
+
 <div class="omikuji" onclick="draw()">おみくじ</div>
 <div class="omikuji" onclick="draw()">おみくじ</div>
 <div class="omikuji" onclick="draw()">おみくじ</div>
+
 </div>
 
 </div>
 
 <div id="result"></div>
 
+<div class="ema-board">
+
+<div class="ema-title">🪵 恋みくじの絵馬</div>
+
+<div class="ema-container" id="emaContainer"></div>
+
+</div>
+
 <script>
 
-let type="";
+let type=""
 
 function start(t){
-
-let today = new Date().toLocaleDateString()
-
-if(localStorage.getItem("omikujiDate")==today){
-document.getElementById("result").innerHTML="今日はもうおみくじを引きました。また明日来てください⛩"
-return
-}
-
 type=t
-
-document.getElementById("selectArea").style.display="none"
+document.getElementById("select").style.display="none"
 document.getElementById("omikujiArea").style.display="block"
 }
 
 let fortunes={
 
 kata:[
-"💖大吉：勇気を出して話しかけて。",
-"🌸中吉：共通の話題を見つけると良い。",
-"😊小吉：笑顔と挨拶が恋を進める。",
-"🍀末吉：焦らず距離を縮めて。"
+"💖大吉：勇気を出して話しかけよう",
+"🌸中吉：共通の話題を見つけよう",
+"😊小吉：笑顔と挨拶を大切に",
+"🍀末吉：焦らずゆっくり"
 ],
 
 ryo:[
-"💞大吉：感謝を伝えるとさらに仲良く。",
-"🌸中吉：一緒に新しいことをすると良い。",
-"😊小吉：相手を褒めると◎",
-"🍀末吉：相手を思いやる気持ちを。"
+"💞大吉：感謝の言葉を伝えよう",
+"🌸中吉：一緒に新しいことを",
+"😊小吉：相手を褒めよう",
+"🍀末吉：思いやりを忘れずに"
 ],
 
 fuku:[
-"💖大吉：復縁のチャンスあり。",
-"🌸中吉：まずは友達から。",
-"😊小吉：過去を責めないこと。",
-"🍀末吉：自分磨きをしよう。"
+"💖大吉：もう一度チャンスあり",
+"🌸中吉：まずは友達から",
+"😊小吉：過去を責めない",
+"🍀末吉：自分磨きを"
 ]
 
 }
@@ -133,14 +179,47 @@ fuku:[
 function draw(){
 
 let list=fortunes[type]
+
 let random=Math.floor(Math.random()*list.length)
 
-document.getElementById("result").innerHTML=list[random]
+let result=list[random]
 
-let today = new Date().toLocaleDateString()
-localStorage.setItem("omikujiDate",today)
+document.getElementById("result").innerHTML=result
+
+saveEma(result)
 
 }
+
+function saveEma(text){
+
+let emaList=JSON.parse(localStorage.getItem("ema"))||[]
+
+emaList.push(text)
+
+localStorage.setItem("ema",JSON.stringify(emaList))
+
+showEma()
+
+}
+
+function showEma(){
+
+let emaList=JSON.parse(localStorage.getItem("ema"))||[]
+
+let container=document.getElementById("emaContainer")
+
+container.innerHTML=""
+
+emaList.forEach(e=>{
+let div=document.createElement("div")
+div.className="ema"
+div.innerText=e
+container.appendChild(div)
+})
+
+}
+
+showEma()
 
 </script>
 
