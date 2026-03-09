@@ -2,226 +2,138 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>恋みくじ神社</title>
+<title>超毒舌 恋みくじ</title>
 
 <style>
 
 body{
-font-family:"Hiragino Mincho ProN",serif;
-background:#fff7f5;
+font-family:sans-serif;
 text-align:center;
+background:linear-gradient(180deg,#081a33,#1e40af);
+color:white;
 margin:0;
 }
 
-header{
-background:#c62828;
-color:white;
-padding:20px;
-font-size:32px;
+h1{
+margin-top:40px;
+}
+
+.box{
+background:rgba(255,255,255,0.1);
+width:420px;
+margin:30px auto;
+padding:30px;
+border-radius:15px;
+backdrop-filter:blur(10px);
 }
 
 button{
 padding:12px 25px;
-margin:10px;
-border:none;
-border-radius:30px;
-background:#d84343;
-color:white;
 font-size:16px;
+border:none;
+border-radius:8px;
+background:#3b82f6;
+color:white;
 cursor:pointer;
+margin-top:15px;
 }
 
 button:hover{
-background:#b71c1c;
+background:#2563eb;
 }
 
-.box{
-display:flex;
-justify-content:center;
-gap:25px;
-margin-top:30px;
+select{
+padding:8px;
+margin:10px;
 }
 
-.omikuji{
-width:110px;
-height:150px;
-background:#fffdf5;
-border:2px solid #c62828;
-border-radius:10px;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-box-shadow:0 6px 10px rgba(0,0,0,0.2);
-transition:0.3s;
-}
-
-.omikuji:hover{
-transform:translateY(-8px);
-}
-
-#result{
-margin-top:30px;
-font-size:20px;
-background:white;
-width:60%;
-margin-left:auto;
-margin-right:auto;
-padding:20px;
-border-radius:10px;
-box-shadow:0 5px 10px rgba(0,0,0,0.2);
-}
-
-.ema-board{
-margin-top:50px;
-padding:30px;
-background:#f5e3c3;
-}
-
-.ema-title{
-font-size:24px;
-margin-bottom:20px;
-}
-
-.ema-container{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-gap:15px;
+.result{
+margin-top:20px;
+font-size:18px;
 }
 
 .ema{
-width:140px;
-height:90px;
-background:#d8a45c;
+margin-top:25px;
+background:white;
+color:black;
+padding:15px;
 border-radius:10px;
-padding:10px;
-font-size:12px;
-box-shadow:0 4px 6px rgba(0,0,0,0.2);
 }
 
 </style>
+
 </head>
 
 <body>
 
-<header>⛩ 恋みくじ神社 ⛩</header>
-
-<p>恋の状況を選んでください</p>
-
-<div id="select">
-
-<button onclick="start('kata')">片思い</button>
-<button onclick="start('ryo')">両思い</button>
-<button onclick="start('fuku')">復縁</button>
-
-</div>
-
-<div id="omikujiArea" style="display:none">
-
-<p>おみくじを選んでください</p>
+<h1>超毒舌 恋みくじ</h1>
 
 <div class="box">
 
-<div class="omikuji" onclick="draw()">おみくじ</div>
-<div class="omikuji" onclick="draw()">おみくじ</div>
-<div class="omikuji" onclick="draw()">おみくじ</div>
+<p>あなたについて</p>
+
+<select id="gender">
+<option value="female">女性</option>
+<option value="male">男性</option>
+<option value="none">好きな人なし</option>
+</select>
+
+<p>今の恋愛状況</p>
+
+<select id="status">
+<option value="kata">片思い</option>
+<option value="ryo">両思い</option>
+<option value="fukuen">復縁したい</option>
+<option value="single">恋人なし</option>
+</select>
+
+<br>
+
+<button onclick="draw()">おみくじを引く</button>
+
+<div class="result" id="result"></div>
+
+<div class="ema">
+
+<h3>絵馬（履歴）</h3>
+<ul id="history"></ul>
 
 </div>
-
-</div>
-
-<div id="result"></div>
-
-<div class="ema-board">
-
-<div class="ema-title">🪵 恋みくじの絵馬</div>
-
-<div class="ema-container" id="emaContainer"></div>
 
 </div>
 
 <script>
 
-let type=""
+const messages=[
 
-function start(t){
-type=t
-document.getElementById("select").style.display="none"
-document.getElementById("omikujiArea").style.display="block"
-}
+"その恋、相手はまだ恋と認識してない可能性高い。",
+"理想高すぎ。現実の人間見よう。",
+"そのLINE、たぶん友達扱い。",
+"追いすぎ。少し引かれてる。",
+"期待だけ膨らませて勝手に傷つくタイプ。",
+"脈あると思ってるの自分だけかも。",
+"恋愛より自己肯定感を育てた方がいい。",
+"その恋、努力より思い込み。",
+"焦りすぎ。恋はオーディションじゃない。",
+"その優しさ、都合よく使われるタイプ。"
 
-let fortunes={
-
-kata:[
-"💖大吉：勇気を出して話しかけよう",
-"🌸中吉：共通の話題を見つけよう",
-"😊小吉：笑顔と挨拶を大切に",
-"🍀末吉：焦らずゆっくり"
-],
-
-ryo:[
-"💞大吉：感謝の言葉を伝えよう",
-"🌸中吉：一緒に新しいことを",
-"😊小吉：相手を褒めよう",
-"🍀末吉：思いやりを忘れずに"
-],
-
-fuku:[
-"💖大吉：もう一度チャンスあり",
-"🌸中吉：まずは友達から",
-"😊小吉：過去を責めない",
-"🍀末吉：自分磨きを"
 ]
-
-}
 
 function draw(){
 
-let list=fortunes[type]
+let msg=messages[Math.floor(Math.random()*messages.length)]
 
-let random=Math.floor(Math.random()*list.length)
+document.getElementById("result").innerText=msg
 
-let result=list[random]
+let li=document.createElement("li")
+li.innerText=msg
 
-document.getElementById("result").innerHTML=result
-
-saveEma(result)
-
-}
-
-function saveEma(text){
-
-let emaList=JSON.parse(localStorage.getItem("ema"))||[]
-
-emaList.push(text)
-
-localStorage.setItem("ema",JSON.stringify(emaList))
-
-showEma()
+document.getElementById("history").appendChild(li)
 
 }
-
-function showEma(){
-
-let emaList=JSON.parse(localStorage.getItem("ema"))||[]
-
-let container=document.getElementById("emaContainer")
-
-container.innerHTML=""
-
-emaList.forEach(e=>{
-let div=document.createElement("div")
-div.className="ema"
-div.innerText=e
-container.appendChild(div)
-})
-
-}
-
-showEma()
 
 </script>
 
 </body>
 </html>
+
