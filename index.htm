@@ -1,3 +1,5 @@
+
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -7,128 +9,189 @@
 <style>
 
 body{
-background:#081a3a;
-color:white;
-text-align:center;
 font-family:sans-serif;
-padding-top:80px;
+text-align:center;
+background:linear-gradient(180deg,#081a33,#1e40af);
+color:white;
+margin:0;
 }
 
 h1{
-color:#6fa8ff;
+margin-top:40px;
+}
+
+.box{
+background:rgba(255,255,255,0.1);
+width:430px;
+margin:30px auto;
+padding:30px;
+border-radius:15px;
+backdrop-filter:blur(10px);
 }
 
 select{
-padding:10px;
-font-size:16px;
-border-radius:8px;
-margin:20px;
+padding:8px;
+margin:8px;
 }
 
 button{
-background:#1e3a8a;
-color:white;
+padding:12px 25px;
+font-size:16px;
 border:none;
-padding:15px 30px;
-font-size:18px;
-border-radius:12px;
+border-radius:8px;
+background:#3b82f6;
+color:white;
 cursor:pointer;
+margin-top:15px;
 }
 
-#paper{
-margin-top:40px;
-width:300px;
-margin-left:auto;
-margin-right:auto;
+button:hover{
+background:#2563eb;
+}
+
+.result{
+margin-top:20px;
+font-size:18px;
+}
+
+.card{
+margin-top:20px;
+padding:20px;
 background:white;
 color:black;
-padding:20px;
-border-radius:10px;
-transform:scaleY(0);
-transform-origin:top;
-transition:0.6s;
+border-radius:12px;
 }
 
-.open{
-transform:scaleY(1);
+.ema{
+margin-top:20px;
+background:white;
+color:black;
+padding:15px;
+border-radius:10px;
+}
+
+.share{
+display:inline-block;
+margin-top:15px;
+padding:10px 20px;
+background:black;
+color:white;
+border-radius:6px;
+text-decoration:none;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<h1>💙超毒舌 恋みくじ💙</h1>
+<h1>超毒舌 恋みくじ</h1>
 
-<p>今の恋愛状況を選んでください</p>
+<div class="box">
 
-<select id="loveType">
-<option value="kata">片思い</option>
-<option value="ryo">両想い</option>
-<option value="lover">恋人</option>
+<p>性別</p>
+<select id="sex">
+<option>女性</option>
+<option>男性</option>
+<option>その他</option>
+</select>
+
+<p>性自認</p>
+<select id="identity">
+<option>女性</option>
+<option>男性</option>
+<option>ノンバイナリー</option>
+<option>考え中</option>
+</select>
+
+<p>年齢層</p>
+<select id="age">
+<option>10代</option>
+<option>20代</option>
+<option>30代</option>
+<option>40代以上</option>
+</select>
+
+<p>恋愛状況</p>
+<select id="status">
+<option>片思い</option>
+<option>両思い</option>
+<option>復縁したい</option>
+<option>恋人なし</option>
 </select>
 
 <br>
 
-<button onclick="draw()">恋みくじを引く</button>
+<button onclick="draw()">おみくじを引く</button>
 
-<div id="paper"></div>
+<div class="card">
 
-<audio id="paperSound" src="paper.mp3"></audio>
-<audio id="bellSound" src="bell.mp3"></audio>
+<p id="message"></p>
+
+<p id="rate"></p>
+
+<p id="danger"></p>
+
+<a id="share" class="share" target="_blank">Xでシェア</a>
+
+</div>
+
+<div class="ema">
+<h3>絵馬（履歴）</h3>
+<ul id="history"></ul>
+</div>
+
+</div>
 
 <script>
 
-const kata = [
-"大吉：その恋、かなり脈あり。でもあなたが鈍感すぎて気づいてない。",
-"中吉：悪くない。でも待ってるだけじゃ恋は始まらない。",
-"小吉：相手はあなたをいい人とは思ってる。でも恋とは別。",
-"凶：今のままだと友達ゾーン固定です。動け。"
-];
+const messages=[
 
-const ryo = [
-"大吉：ほぼ理想の関係。でも油断すると普通に冷められる。",
-"中吉：両想いだけど、あなたが少し重いと思われてる。",
-"小吉：好き同士。でもお互い様子見しすぎ。",
-"凶：その両想い、本当に同じ温度？"
-];
+"その恋、相手はまだ恋として認識してない。",
+"脈ありだと思ってるの、もしかして自分だけ。",
+"追いLINEは恋を終わらせる最短ルート。",
+"理想が高すぎて現実が追いついてない。",
+"その優しさ、都合よく使われるタイプ。",
+"恋愛は想像より観察力。",
+"その沈黙、ロマンじゃなくて様子見。",
+"行動しない恋はただの妄想。",
+"恋愛の主役は自分じゃなく相手の気持ち。",
+"油断すると両思いでも普通に終わる。"
 
-const lover = [
-"大吉：かなりいいカップル。たぶん周りに羨ましがられてる。",
-"中吉：順調。でも慣れてきて雑になってない？",
-"小吉：ちょっとマンネリ。たまには努力しよう。",
-"凶：その恋、惰性で続いてない？"
-];
+]
 
 function draw(){
 
-document.getElementById("paper").classList.remove("open");
+let msg = messages[Math.floor(Math.random()*messages.length)]
 
-document.getElementById("paperSound").play();
+let rate = Math.floor(Math.random()*70)+10
 
-let type = document.getElementById("loveType").value;
+let dangerLevel = Math.floor(Math.random()*5)+1
 
-let result;
+let stars=""
 
-if(type=="kata"){
-result = kata[Math.floor(Math.random()*kata.length)];
+for(let i=0;i<dangerLevel;i++){
+stars+="★"
 }
 
-if(type=="ryo"){
-result = ryo[Math.floor(Math.random()*ryo.length)];
-}
+document.getElementById("message").innerText=msg
 
-if(type=="lover"){
-result = lover[Math.floor(Math.random()*lover.length)];
-}
+document.getElementById("rate").innerText="恋愛成功率 "+rate+"%"
 
-setTimeout(function(){
+document.getElementById("danger").innerText="恋愛危険度 "+stars
 
-document.getElementById("paper").innerText=result;
-document.getElementById("paper").classList.add("open");
-document.getElementById("bellSound").play();
+let text = "今日の超毒舌恋みくじ：" + msg + " 恋愛成功率"+rate+"%"
 
-},700);
+let url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text)
+
+document.getElementById("share").href = url
+
+let li=document.createElement("li")
+
+li.innerText=msg
+
+document.getElementById("history").appendChild(li)
 
 }
 
@@ -136,6 +199,7 @@ document.getElementById("bellSound").play();
 
 </body>
 </html>
+```
 
 
 
