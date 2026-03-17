@@ -7,128 +7,128 @@
 <style>
 
 body{
-font-family:sans-serif;
-text-align:center;
-background:linear-gradient(180deg,#081a33,#1e40af);
+background:#081a3a;
 color:white;
-margin:0;
+text-align:center;
+font-family:sans-serif;
+padding-top:80px;
 }
 
 h1{
-margin-top:40px;
-}
-
-.box{
-background:rgba(255,255,255,0.1);
-width:420px;
-margin:30px auto;
-padding:30px;
-border-radius:15px;
-backdrop-filter:blur(10px);
-}
-
-button{
-padding:12px 25px;
-font-size:16px;
-border:none;
-border-radius:8px;
-background:#3b82f6;
-color:white;
-cursor:pointer;
-margin-top:15px;
-}
-
-button:hover{
-background:#2563eb;
+color:#6fa8ff;
 }
 
 select{
-padding:8px;
-margin:10px;
+padding:10px;
+font-size:16px;
+border-radius:8px;
+margin:20px;
 }
 
-.result{
-margin-top:20px;
+button{
+background:#1e3a8a;
+color:white;
+border:none;
+padding:15px 30px;
 font-size:18px;
+border-radius:12px;
+cursor:pointer;
 }
 
-.ema{
-margin-top:25px;
+#paper{
+margin-top:40px;
+width:300px;
+margin-left:auto;
+margin-right:auto;
 background:white;
 color:black;
-padding:15px;
+padding:20px;
 border-radius:10px;
+transform:scaleY(0);
+transform-origin:top;
+transition:0.6s;
+}
+
+.open{
+transform:scaleY(1);
 }
 
 </style>
-
 </head>
 
 <body>
 
-<h1>超毒舌 恋みくじ</h1>
+<h1>💙超毒舌 恋みくじ💙</h1>
 
-<div class="box">
+<p>今の恋愛状況を選んでください</p>
 
-<p>あなたについて</p>
-
-<select id="gender">
-<option value="female">女性</option>
-<option value="male">男性</option>
-<option value="none">好きな人なし</option>
-</select>
-
-<p>今の恋愛状況</p>
-
-<select id="status">
+<select id="loveType">
 <option value="kata">片思い</option>
-<option value="ryo">両思い</option>
-<option value="fukuen">復縁したい</option>
-<option value="single">恋人なし</option>
+<option value="ryo">両想い</option>
+<option value="lover">恋人</option>
 </select>
 
 <br>
 
-<button onclick="draw()">おみくじを引く</button>
+<button onclick="draw()">恋みくじを引く</button>
 
-<div class="result" id="result"></div>
+<div id="paper"></div>
 
-<div class="ema">
-
-<h3>絵馬（履歴）</h3>
-<ul id="history"></ul>
-
-</div>
-
-</div>
+<audio id="paperSound" src="paper.mp3"></audio>
+<audio id="bellSound" src="bell.mp3"></audio>
 
 <script>
 
-const messages=[
+const kata = [
+"大吉：その恋、かなり脈あり。でもあなたが鈍感すぎて気づいてない。",
+"中吉：悪くない。でも待ってるだけじゃ恋は始まらない。",
+"小吉：相手はあなたをいい人とは思ってる。でも恋とは別。",
+"凶：今のままだと友達ゾーン固定です。動け。"
+];
 
-"その恋、相手はまだ恋と認識してない可能性高い。",
-"理想高すぎ。現実の人間見よう。",
-"そのLINE、たぶん友達扱い。",
-"追いすぎ。少し引かれてる。",
-"期待だけ膨らませて勝手に傷つくタイプ。",
-"脈あると思ってるの自分だけかも。",
-"恋愛より自己肯定感を育てた方がいい。",
-"その恋、努力より思い込み。",
-"焦りすぎ。恋はオーディションじゃない。",
-"その優しさ、都合よく使われるタイプ。"
+const ryo = [
+"大吉：ほぼ理想の関係。でも油断すると普通に冷められる。",
+"中吉：両想いだけど、あなたが少し重いと思われてる。",
+"小吉：好き同士。でもお互い様子見しすぎ。",
+"凶：その両想い、本当に同じ温度？"
+];
 
-]
+const lover = [
+"大吉：かなりいいカップル。たぶん周りに羨ましがられてる。",
+"中吉：順調。でも慣れてきて雑になってない？",
+"小吉：ちょっとマンネリ。たまには努力しよう。",
+"凶：その恋、惰性で続いてない？"
+];
 
 function draw(){
 
-let msg=messages[Math.floor(Math.random()*messages.length)]
+document.getElementById("paper").classList.remove("open");
 
-document.getElementById("result").innerText=msg
+document.getElementById("paperSound").play();
 
-let li=document.createElement("li")
-li.innerText=msg
+let type = document.getElementById("loveType").value;
 
-document.getElementById("history").appendChild(li)
+let result;
+
+if(type=="kata"){
+result = kata[Math.floor(Math.random()*kata.length)];
+}
+
+if(type=="ryo"){
+result = ryo[Math.floor(Math.random()*ryo.length)];
+}
+
+if(type=="lover"){
+result = lover[Math.floor(Math.random()*lover.length)];
+}
+
+setTimeout(function(){
+
+document.getElementById("paper").innerText=result;
+document.getElementById("paper").classList.add("open");
+document.getElementById("bellSound").play();
+
+},700);
 
 }
 
@@ -136,4 +136,9 @@ document.getElementById("history").appendChild(li)
 
 </body>
 </html>
+
+
+
+
+
 
